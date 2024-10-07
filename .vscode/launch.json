@@ -11,7 +11,14 @@
             "program": "src/main.py",
             "console": "integratedTerminal",
             "args": [
-                "${command:pickArgs}"
+                "--input",
+                //"/media/ewen/Documents Partagés/Documents/projets/GuitarTabsML/data_raw/Guitar_Pro_Tabs/Tabs/Pop_Rock",
+                "h:/Documents/projets/GuitarTabsML/data_raw/Guitar_Pro_Tabs/Tabs/Classic",
+                "--output",
+                //"/media/ewen/Documents Partagés/Documents/projets/GuitarTabsML/data_processed",
+                "h:/Documents/projets/GuitarTabsML/data_processed",
+                "--multiproc",
+                "--report"
             ]
         },
         {

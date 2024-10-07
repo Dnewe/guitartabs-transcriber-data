@@ -3,7 +3,7 @@ __pycache__/
 *.pyc
 
 # Ignore virtual environments
-.venv/
+.venv*/
 
 # Ignore environment variable files
 .env
@@ -12,5 +12,6 @@ __pycache__/
 .ipynb_checkpoints/
 
 # Ignore specific folders
+tests/
 
 # Ignore specific files

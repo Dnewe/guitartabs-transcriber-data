@@ -1,1 +1,2 @@
-pyguitarpro
+pyguitarpro==0.9.3
+tqdm
