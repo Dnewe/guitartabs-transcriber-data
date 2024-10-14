@@ -1,12 +1,20 @@
 import guitarpro as gp
 import config
 from typing import List,Dict
-from utils.gp_utils import convert_pitch_to_str, convert_note_to_pitch
+from utils.gp_utils import convert_pitch_to_str, convert_note_to_pitch, get_note_position
 
 
 def valid_track(track: gp.Track) -> bool:
     # filter out percussion
     if track.isPercussionTrack:
+        return False
+    
+    # filter out guitar with too many frets
+    if track.fretCount> config.FRETS_NUM:
+        return False
+    
+    # filter out guitar with a different capo
+    if track.offset != config.CAPO:
         return False
     
     # count strings and determine tuning
@@ -17,8 +25,8 @@ def valid_track(track: gp.Track) -> bool:
         tuning.append(string.value)
    
     # check tuning / number of strings according to config
-    correct_tuning = (config.REQUIRED_TUNING == [convert_pitch_to_str(pitch) for pitch in tuning][::-1])
-    correct_stringsnum = (stringsnum == config.REQUIRED_STRINGSNUM)
+    correct_tuning = (config.TUNING == [convert_pitch_to_str(pitch) for pitch in tuning][::-1])
+    correct_stringsnum = (stringsnum == config.STRINGS_NUM)
 
     return correct_tuning and correct_stringsnum
 
@@ -43,8 +51,7 @@ def process_gpfile(filepath:str) -> List[Dict]|None:
                         pitch = convert_note_to_pitch(note)
                         total_pitches += pitch
                         dict[f'pitch_{i+1}'] = pitch
-                        dict[f'string_{note.string}'] = 1
-                        dict[f'fret_{note.string}'] = note.value
+                        dict[f'position_{note.string}'] = get_note_position(note)
 
                         for a in range(config.NUM_NOTES_AFTER):
                             if len(data_dicts)>a:
