@@ -31,24 +31,30 @@ def process_gpfile(filepath:str) -> List[Dict]|None:
         return None
     
     data_dicts = []
-    num = 0
     for track in gp_file.tracks:
         if (not valid_track(track)):
             continue
         for measure in track.measures:
             for voice in measure.voices:
                 for beat in voice.beats:
-                    dict = {keys:[] for keys in config.DATACSV_HEADER}
-                    for note in beat.notes:
-                        num +=1
-                        dict['strings'].append(note.string)
-                        dict['frets'].append(note.value)
-                        dict['pitches'].append(convert_note_to_pitch(note))    
+                    dict = {keys:0 for keys in config.DATACSV_HEADER}
+                    total_pitches = 0
+                    for i, note in enumerate(beat.notes):
+                        pitch = convert_note_to_pitch(note)
+                        total_pitches += pitch
+                        dict[f'pitch_{i+1}'] = pitch
+                        dict[f'string_{note.string}'] = 1
+                        dict[f'fret_{note.string}'] = note.value
 
-                    dict['pitches-1'].extend(data_dicts[-1]['pitches'].copy()) if len(data_dicts)>0 else None
-                    dict['pitches-2'].extend(data_dicts[-2]['pitches'].copy()) if len(data_dicts)>1 else None
-                    data_dicts[-1]['pitches+1'].extend(dict['pitches'].copy()) if len(data_dicts)>0 else None
-                    data_dicts[-2]['pitches+2'].extend(dict['pitches'].copy()) if len(data_dicts)>1 else None
+                        for a in range(config.NUM_NOTES_AFTER):
+                            if len(data_dicts)>a:
+                                data_dicts[-(a+1)][f'pitch+{a+1}_{i+1}'] = pitch
+                    if total_pitches ==0:
+                        continue
+  
+                    for i in range(6):
+                        for b in range(config.NUM_NOTES_BEFORE):
+                            dict[f'pitch-{b+1}_{i+1}'] = data_dicts[-(b+1)][f'pitch_{i+1}'] if len(data_dicts)>b else 0
 
                     data_dicts.append(dict)
 

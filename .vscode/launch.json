@@ -16,7 +16,7 @@
                 "h:/Documents/projets/GuitarTabsML/data_raw/Guitar_Pro_Tabs/Tabs/Classic",
                 "--output",
                 //"/media/ewen/Documents Partagés/Documents/projets/GuitarTabsML/data_processed",
-                "h:/Documents/projets/GuitarTabsML/data_processed",
+                "h:/Documents/projets/GuitarTabsML/data_processed/Reworked",
                 "--multiproc",
                 "--report"
             ]
