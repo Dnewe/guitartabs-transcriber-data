@@ -51,7 +51,7 @@ def process_gpfile(filepath:str) -> List[Dict]|None:
                         pitch = convert_note_to_pitch(note)
                         total_pitches += pitch
                         dict[f'pitch_{i+1}'] = pitch
-                        dict[f'position_{note.string}'] = get_note_position(note)
+                        dict[f'position_{i+1}'] = get_note_position(note)
 
                         for a in range(config.NUM_NOTES_AFTER):
                             if len(data_dicts)>a:
