@@ -8,8 +8,8 @@ CAPO = 0 # 0 means no capo
 
 
 # information on data csv file
-NUM_NOTES_BEFORE = 4
-NUM_NOTES_AFTER = 4
+NUM_NOTES_BEFORE = 20
+NUM_NOTES_AFTER = 20
 
 
 DATACSV_HEADER = ([f'position_{i+1}' for i in range(6)] +
