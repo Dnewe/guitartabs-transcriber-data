@@ -3,8 +3,9 @@ import multiprocessing
 import threading
 from functools import partial
 from typing import Tuple
-from utils.fs_io import write_rows_to_csv, create_dir, combine_csvfiles, remove_dir
+from utils.fs_io import write_rows_to_csv, create_dir
 from process_gpfile import process_gpfile
+from write_data import write_data
 
 
 def init_directories(args) -> Tuple[str,str]:
@@ -27,8 +28,8 @@ def get_filepaths(dir):
 def process_file(filepath, tempdir:str) -> None:
     if filepath[:-1].endswith('.gp'):
         data_dicts =  process_gpfile(filepath)
-        datacsv_path = os.path.join(tempdir, f"datacsv_thread{threading.get_ident()}.csv")
-        reportcsv_path = os.path.join(tempdir, f"reportcsv_thread{threading.get_ident()}.csv")
+        datacsv_path = os.path.join(tempdir, f"data_thread{threading.get_ident()}.csv")
+        reportcsv_path = os.path.join(tempdir, f"report_thread{threading.get_ident()}.csv")
         write_rows_to_csv(reportcsv_path, [{'filepath':filepath, 'sucess':1 if data_dicts is not None else 0}])
         if data_dicts is not None and len(data_dicts)>0:
             write_rows_to_csv(datacsv_path, data_dicts)
@@ -59,13 +60,5 @@ def run(args):
     else:
         process_files(args.input, tempdir)
     
-    print("Combining temporary CSV files")
-    datacsv_path = os.path.join(outdir,f"data_{os.path.basename(args.input)}.csv")
-    reportcsv_path = os.path.join(outdir, f"report_{os.path.basename(args.input)}.csv") if args.report else None
-
-    combine_csvfiles(datacsv_path, [os.path.join(tempdir,csvname) for csvname in os.listdir(tempdir) if csvname.startswith("data")])
-    if args.report:
-        combine_csvfiles(reportcsv_path, [os.path.join(tempdir,csvname) for csvname in os.listdir(tempdir) if csvname.startswith("report")])
+    write_data(outdir, tempdir, args.report)
     
-    print("Removing temporary files")
-    remove_dir(tempdir)

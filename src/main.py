@@ -1,7 +1,7 @@
 import argparse
 import os
 import sys
-from run import run
+import process_data
 
 
 def parse_arguments():
@@ -55,4 +55,4 @@ if __name__ == "__main__":
     check_parameters(args)
 
     # Run program
-    run(args)
+    process_data.run(args)

@@ -1,5 +1,6 @@
 import os
 import csv
+import json
 import shutil
 from typing import List,Dict
 import config
@@ -45,3 +46,8 @@ def combine_csvfiles(results_csvpath, csvpath_list:List):
             with open(csvpath, 'r') as csvfile:
                 reader = csv.reader(csvfile)
                 writer.writerows(reader)
+
+
+def write_json(filepath:str, data:Dict) -> None:
+    with open(filepath, 'w') as file:
+        json.dump(data, file, indent=4)
