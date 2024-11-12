@@ -29,7 +29,7 @@ def valid_track(track: gp.Track) -> bool:
     return correct_tuning and correct_stringsnum
 
 
-position_distribution = [[0 for pos in range(config.MAX_POSITION)] for string in range(6)]
+position_distribution = [[0 for pos in range(config.POSITIONS)] for string in range(6)]
 string_distribution = [[0 for str in range(config.STRINGS)] for string in range(6)]
 
 def skip_beat(i, position, string) -> bool:
@@ -66,25 +66,25 @@ def process_gpfile(filepath:str) -> List[Dict]|None:
                         notenum, octave = pitch_to_note_octave(pitch)
                         string = note.string
                         position = get_noteposition(note)
-                        dict[f'note_{i+1}'] = notenum
-                        dict[f'octave_{i+1}'] = octave
-                        dict[f'position_{i+1}'] = position
-                        dict[f'string_{i+1}'] = string
+                        dict[f'x_note_{i+1}'] = notenum
+                        dict[f'x_octave_{i+1}'] = octave
+                        dict[f'y_position_{i+1}'] = position
+                        dict[f'y_string_{i+1}'] = string
 
                         skip = skip_beat(i, position, string)
                         position_distribution[i][position-1] +=1 if not skip else 0
 
-                        for a in range(config.NUM_NOTES_AFTER):
+                        for a in range(config.BEATS_AFTER):
                             if len(data_dicts)>a:
-                                data_dicts[-(a+1)][f'note+{a+1}_{i+1}'] = notenum
-                                data_dicts[-(a+1)][f'octave+{a+1}_{i+1}'] = octave
+                                data_dicts[-(a+1)][f'x_note+{a+1}_{i+1}'] = notenum
+                                data_dicts[-(a+1)][f'x_octave+{a+1}_{i+1}'] = octave
                     if total_pitches ==0:
                         continue
   
                     for i in range(6):
-                        for b in range(config.NUM_NOTES_BEFORE):
-                            dict[f'note-{b+1}_{i+1}'] = data_dicts[-(b+1)][f'note_{i+1}'] if len(data_dicts)>b else 0
-                            dict[f'octave-{b+1}_{i+1}'] = data_dicts[-(b+1)][f'octave_{i+1}'] if len(data_dicts)>b else 0
+                        for b in range(config.BEATS_BEFORE):
+                            dict[f'x_note-{b+1}_{i+1}'] = data_dicts[-(b+1)][f'x_note_{i+1}'] if len(data_dicts)>b else 0
+                            dict[f'x_octave-{b+1}_{i+1}'] = data_dicts[-(b+1)][f'x_octave_{i+1}'] if len(data_dicts)>b else 0
 
                     if not skip:
                         data_dicts.append(dict)
