@@ -17,14 +17,11 @@ def write_metadata(outdir:str):
     metadata = {'tuning': config.TUNING,
                 'strings': config.STRINGS,
                 'frets': config.FRETS,
-                'positions': config.POSITIONS,
                 'capo': config.CAPO,
                 'beats_before': config.BEATS_BEFORE,
                 'beats_after': config.BEATS_AFTER,
-                'max_position_distr': config.MAX_POSITION_DISTR,
                 'max_string_distr': config.MAX_STRING_DISTR,
                 'csv_strings_index':None,
-                'csv_positions_index':None,
                 'data_header': config.DATACSV_HEADER}
     write_json(os.path.join(outdir, 'metadata.json'), metadata)
 
