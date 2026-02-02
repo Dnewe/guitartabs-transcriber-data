@@ -4,7 +4,7 @@ import threading
 from functools import partial
 from typing import Tuple
 from utils.fs_io import write_rows_to_csv, create_dir
-from process_gpfile import process_gpfile
+from process_gpfile import GPFile
 from write_data import write_data
 
 
@@ -27,7 +27,7 @@ def get_filepaths(dir):
 
 def process_file(filepath, tempdir:str) -> None:
     if filepath[:-1].endswith('.gp'):
-        data_dicts =  process_gpfile(filepath)
+        data_dicts =  GPFile(filepath).process()
         datacsv_path = os.path.join(tempdir, f"data_thread{threading.get_ident()}.csv")
         reportcsv_path = os.path.join(tempdir, f"report_thread{threading.get_ident()}.csv")
         write_rows_to_csv(reportcsv_path, [{'filepath':filepath, 'sucess':1 if data_dicts is not None else 0}])

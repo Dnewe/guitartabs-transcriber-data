@@ -13,10 +13,10 @@
             "args": [
                 "--input",
                 //"/media/ewen/Documents Partagés/Documents/projets/GuitarTabsML/data_raw/Guitar_Pro_Tabs/Tabs/Pop_Rock",
-                "h:/Documents/projets/GuitarTabsML/data_raw/Guitar_Pro_Tabs/Tabs/Classic",
+                "h:/Documents/projets/GuitarTabsML/data_raw/Guitar_Pro_Tabs/Tabs/E",
                 "--output",
                 //"/media/ewen/Documents Partagés/Documents/projets/GuitarTabsML/data_processed",
-                "h:/Documents/projets/GuitarTabsML/data_processed/Finale",
+                "h:/Documents/projets/GuitarTabsML/data_processed/New",
                 "--multiproc",
                 "--report"
             ]
