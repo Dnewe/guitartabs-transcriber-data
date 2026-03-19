@@ -4,7 +4,7 @@ import threading
 from functools import partial
 from typing import Tuple
 from utils.fs_io import write_rows_to_csv, create_dir
-from process_gpfile import GPFile
+from gp_file import GPFile
 from write_data import write_data
 
 
@@ -19,7 +19,7 @@ def init_directories(args) -> Tuple[str,str]:
 
 
 def get_filepaths(dir):
-    for subdir, dirs, files in os.walk(dir):
+    for subdir, _, files in os.walk(dir):
         for file in files:
             filepath = subdir + os.sep + file
             yield filepath
@@ -35,7 +35,6 @@ def process_file(filepath, tempdir:str) -> None:
             write_rows_to_csv(datacsv_path, data_dicts)
         
 
-
 def process_files_in_parallel(dir, tempdir:str) -> None:
     filepaths= get_filepaths(dir)
     partial_process_file = partial(process_file, tempdir=tempdir)
@@ -44,7 +43,7 @@ def process_files_in_parallel(dir, tempdir:str) -> None:
 
 
 def process_files(dir, tempdir:str) -> None:
-    for subdir, dirs, files in os.walk(dir): 
+    for subdir, _, files in os.walk(dir): 
             for file in files:
                 filepath:str = subdir + os.sep + file
                 process_file(filepath, tempdir)

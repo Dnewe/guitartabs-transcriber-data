@@ -1,47 +1,23 @@
 import guitarpro as gp
 import config
-from typing import List,Dict,Tuple
-from utils.gp_utils import convert_pitch_to_str, convert_note_to_pitch, pitch_to_note_octave
+from typing import List,Dict
+from utils.gp_utils import convert_note_to_pitch, pitch_to_note_octave, valid_track
 
-
-def valid_track(track: gp.Track) -> bool:
-    # filter out percussion
-    if track.isPercussionTrack:
-        return False 
-    # filter out guitar with too many frets
-    if track.fretCount> config.FRETS:
-        return False
-    # filter out guitar with a different capo
-    if track.offset != config.CAPO:
-        return False
-    
-    # count strings and determine tuning
-    stringsnum = 0
-    tuning = []
-    for string in track.strings:
-        stringsnum += 1
-        tuning.append(string.value)
-   
-    # check tuning / number of strings according to config
-    correct_tuning = (config.TUNING == [convert_pitch_to_str(pitch) for pitch in tuning][::-1])
-    correct_stringsnum = (stringsnum == config.STRINGS)
-
-    return correct_tuning and correct_stringsnum
 
 class GPFile:
     gp_file: gp.Song|None = None
     data_dicts: List[Dict]
-
-    # trim data
     skipped: List
-    string_distr = [[0 for _ in range(config.STRINGS)] for note in range(config.STRINGS)]
-    fret_distr = [[0 for _ in range(config.FRETS+1)] for note in range(config.STRINGS)]
+    string_distr: List[List[int]]
+    fret_distr: List[List[int]]
 
     def __init__(self, path) -> None:
         try:
             self.data_dicts = []
             self.skipped = []
             self.gp_file = gp.parse(path)
+            self.string_distr = [[0 for _ in range(config.STRINGS)] for note in range(config.STRINGS)]
+            self.fret_distr = [[0 for _ in range(config.FRETS+1)] for note in range(config.STRINGS)]
         except Exception as e:
             print(f"Error for {path} : {e}")
             return None
@@ -57,9 +33,10 @@ class GPFile:
             # skip if fret exceeds distr limit
             if sum(self.fret_distr[i])>1000 : exceeds_fretdistr = exceeds_fretdistr or ((self.fret_distr[i][frets[i]] / sum(self.fret_distr[i])) > config.MAX_FRET_DISTR) 
         
-        return exceeds_strdistr or exceeds_fretdistr
+        is_skipped = exceeds_strdistr or exceeds_fretdistr
+        return is_skipped
 
-    def add_to_distr(self, strings, frets):
+    def _add_to_distr(self, strings, frets):
         for i in range(len(strings)):
             self.string_distr[i][strings[i]-1] +=1
             self.fret_distr[i][frets[i]] +=1
@@ -118,7 +95,7 @@ class GPFile:
                                 dict[f'x_duration-{b+1}_{i+1}'] = self.data_dicts[-(b+1)][f'x_duration_{i+1}'] if len(self.data_dicts)>b else 0
                         
                         if not self.skip_beat(strings, frets):
-                            self.add_to_distr(strings, frets)
+                            self._add_to_distr(strings, frets)
                         else:
                             self.skipped.append(dict)
                         self.data_dicts.append(dict)
@@ -132,4 +109,3 @@ class GPFile:
         self.to_dict()
         self.trim()
         return self.data_dicts
-

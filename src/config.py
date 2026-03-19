@@ -1,14 +1,16 @@
-TEST_DATA = False
+from typing import List
+
+TEST_DATA: bool = False
 
 # gp file filters
-TUNING = ['E2', 'A2', 'D3', 'G3', 'B3', 'E4']
+TUNING: List[str] = ['E2', 'A2', 'D3', 'G3', 'B3', 'E4']
 STRINGS = 6
 FRETS = 24 # must be >=12   
 CAPO = 0 # 0 means no capo
 
 # data distribution
-MAX_STRING_DISTR = (1+0.5)/6 if not TEST_DATA else 1
-MAX_FRET_DISTR = (1+0.5)/24 if not TEST_DATA else 1
+MAX_STRING_DISTR = 0.25 if not TEST_DATA else 1
+MAX_FRET_DISTR = 0.1 if not TEST_DATA else 1
 
 
 # information on data csv file
